@@ -21,17 +21,18 @@ class TextSearchField(forms.CharField):
 
     def _parse_search(self, value):
         """Parses the search string."""
-        if QUOTATION_MARKS.match(value):
-            return Search(is_exact=True, string=value.group(1))
-        else:
+        match = QUOTATION_MARKS.match(value)
+        if match is None:
             return Search(is_exact=False, string=value)
+        else:
+            return Search(is_exact=True, string=match.group(1))
 
 
     def clean(self, value):
         value = super(TextSearchField, self).clean(value)
         search = self._parse_search(value)
         if search.is_exact:
-            return Q(**{self.name: value})
+            return Q(**{self.name: search.string})
         else:
-            return Q(**{self.name + '__icontains': value})
+            return Q(**{self.name + '__icontains': search.string})
         

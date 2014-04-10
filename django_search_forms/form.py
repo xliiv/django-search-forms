@@ -53,4 +53,6 @@ class SearchForm(forms.Form):
         """Get a Q object basing on the form data."""
         self.is_valid() # Cannot be invalid, so just run the validator
         
-        return reduce(operator.and_, self.cleaned_data.values(), Q())
+        result =  reduce(operator.and_, self.cleaned_data.values(), Q())
+        return result 
+        
