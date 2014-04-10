@@ -35,4 +35,3 @@ class TextSearchField(forms.CharField):
             return Q(**{self.name: search.string})
         else:
             return Q(**{self.name + '__icontains': search.string})
-        

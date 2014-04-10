@@ -19,6 +19,9 @@ class SearchFormMeta(type(forms.Form)):
             fields = mcls._setup_fields(dict_['Meta'])
             dict_, prev = fields, dict_
             dict_.update(prev)
+            for k, v in dict_.items():
+                if isinstance(v, forms.Field):
+                    v.name = k
         return super(SearchFormMeta, mcls).__new__(mcls, clsname, bases, dict_)
 
 
@@ -32,15 +35,14 @@ class SearchFormMeta(type(forms.Form)):
         else:
             fields = opts.Model._meta.fields
         return {
-            field.name: mcls._get_search_field(field, field.name)
+            field.name: mcls._get_search_field(field)
             for field in fields
         }
 
 
     @classmethod
-    def _get_search_field(mcls, field, name):
+    def _get_search_field(mcls, field):
         field = TextSearchField()
-        field.name = name
         return field
 
 
