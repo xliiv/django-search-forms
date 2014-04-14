@@ -26,10 +26,10 @@ setup(name='django-search-forms',
     zip_safe=True,
     install_requires=[
         'django>=1.4.9',
-    ]
+    ],
     extras_require={
         'ajax': [
             'bob-ajax-selects>=1.3.3',
         ],
-    }
+    },
 )
