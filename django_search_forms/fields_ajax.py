@@ -2,13 +2,12 @@
 try:
     from ajax_select.fields import (
         AutoCompleteSelectField,
-        AutoCompleteField,
-        AutoCompleteSelectMultipleField,
     )
 except ImportError:
     raise ImportError("You need to install bob-ajax-select package")
 
 from django.db.models import Q
+
 
 class RelatedAjaxSearchField(AutoCompleteSelectField):
     """A field that enables lookup by related objects."""
@@ -18,5 +17,7 @@ class RelatedAjaxSearchField(AutoCompleteSelectField):
         super(RelatedAjaxSearchField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
-        return Q(**{self.name + '_id': value})
-        
+        if value:
+            return Q(**{self.name + '_id': value})
+        else:
+            return Q()

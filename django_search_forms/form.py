@@ -9,7 +9,8 @@ import operator
 from django import forms
 from django.db.models import Q
 
-from .fields import TextSearchField
+from django_search_forms.fields import TextSearchField
+
 
 class SearchFormMeta(type(forms.Form)):
     """Metaclass for search form."""
@@ -23,7 +24,6 @@ class SearchFormMeta(type(forms.Form)):
                 if isinstance(v, forms.Field):
                     v.name = k
         return super(SearchFormMeta, mcls).__new__(mcls, clsname, bases, dict_)
-
 
     @classmethod
     def _setup_fields(mcls, opts):
@@ -39,7 +39,6 @@ class SearchFormMeta(type(forms.Form)):
             for field in fields
         }
 
-
     @classmethod
     def _get_search_field(mcls, field):
         field = TextSearchField()
@@ -53,8 +52,6 @@ class SearchForm(forms.Form):
 
     def get_query(self):
         """Get a Q object basing on the form data."""
-        self.is_valid() # Cannot be invalid, so just run the validator
-        
-        result =  reduce(operator.and_, self.cleaned_data.values(), Q())
-        return result 
-        
+        self.is_valid()  # Cannot be invalid, so just run the validator
+        result = reduce(operator.and_, self.cleaned_data.values(), Q())
+        return result
