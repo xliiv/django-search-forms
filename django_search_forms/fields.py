@@ -61,12 +61,28 @@ class SearchField(forms.Field):
 class ExactSearchField(SearchField, forms.CharField):
     """The field always searches exactly"""
 
-    def __init__(self, *args, **kwargs):
-        kwargs['required'] = False
-        super(ExactSearchField, self).__init__(*args, **kwargs)
-
     def get_query(self, value):
         return Q(**{self.name: value})
+
+
+UNQUOTED_VALUE = (r'(?P<content_uq>[^",]+)(,|$)')
+QUOTED_VALUE = (r'"(?P<content_q>(""|[^"])+)"(,|$)')
+SINGLE_VALUE = re.compile('|'.join([UNQUOTED_VALUE, QUOTED_VALUE]))
+
+
+class MultiSearchField(SearchField, forms.CharField):
+    """The field that allows one to specify several comma-separated values."""
+
+    def get_query(self, value):
+        values = [
+            (
+                match.group('content_uq') or
+                match.group('content_q')
+            ).replace('""', '"')
+            for match in SINGLE_VALUE.finditer(value)
+        ]
+        return Q(**{self.name + '__in': values})
+
 
 
 class RelatedSearchField(SearchField, forms.ChoiceField):
