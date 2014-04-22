@@ -10,7 +10,7 @@ with open('README.rst') as f:
 
 
 setup(name='django-search-forms',
-    version='0.2',
+    version='0.3',
     description="Search forms for django",
     long_description=long_description,
     classifiers=[

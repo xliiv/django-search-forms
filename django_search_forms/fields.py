@@ -78,7 +78,7 @@ class MultiSearchField(SearchField, forms.CharField):
             (
                 match.group('content_uq') or
                 match.group('content_q')
-            ).replace('""', '"')
+            ).strip().replace('""', '"')
             for match in SINGLE_VALUE.finditer(value)
         ]
         return Q(**{self.name + '__in': values})
