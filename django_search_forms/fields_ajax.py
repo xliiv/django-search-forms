@@ -27,8 +27,8 @@ class RelatedAjaxSearchField(AutoCompleteSelectField):
 class AjaxTextSearch(AutoCompleteField):
     """
     A field that enables both:
-        - search by typed in text,
-        - search by picked value from lookup.
+        - search by text typed in,
+        - search by value picked from lookup.
     """
 
     def __init__(self, filter_field='', *args, **kwargs):
