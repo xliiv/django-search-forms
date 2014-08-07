@@ -104,8 +104,9 @@ class RelatedSearchField(SearchField, forms.ChoiceField):
 class TextSearchField(SearchField, forms.CharField):
     """The field that allows using quotes for exact searches"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, filter_field=None, *args, **kwargs):
         kwargs['required'] = False
+        self.filter_field = filter_field
         super(TextSearchField, self).__init__(*args, **kwargs)
 
     def _parse_search(self, value):
@@ -118,7 +119,8 @@ class TextSearchField(SearchField, forms.CharField):
 
     def get_query(self, value):
         search = self._parse_search(value)
+        filter_field = self.filter_field if self.filter_field else self.name
         if search.is_exact:
-            return Q(**{self.name: search.string})
+            return Q(**{filter_field: search.string})
         else:
-            return Q(**{self.name + '__icontains': search.string})
+            return Q(**{filter_field + '__icontains': search.string})
